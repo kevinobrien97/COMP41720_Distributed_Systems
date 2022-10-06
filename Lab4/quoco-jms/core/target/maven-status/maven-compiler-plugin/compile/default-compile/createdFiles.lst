@@ -1,0 +1,8 @@
+service/core/QuotationService.class
+service/message/QuotationResponseMessage.class
+service/core/Constants.class
+service/core/ClientInfo.class
+service/core/AbstractQuotationService.class
+service/core/Quotation.class
+service/message/QuotationRequestMessage.class
+service/core/BrokerService.class
