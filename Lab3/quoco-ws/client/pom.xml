@@ -1,0 +1,75 @@
+ <project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>lab3</groupId>
+    <artifactId>client</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <main.class>Client</main.class>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+     <dependencies>
+        <!-- depends on the core project-->
+        <dependency>
+            <groupId>lab3</groupId>
+            <artifactId>core</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+              <groupId>jakarta.xml.ws</groupId>
+              <artifactId>jakarta.xml.ws-api</artifactId>
+              <version>2.3.3</version>
+          </dependency>
+          <!-- https://mvnrepository.com/artifact/org.jmdns/jmdns -->
+          <dependency>
+              <groupId>javax.xml.ws</groupId>
+              <artifactId>jaxws-api</artifactId>
+              <version>2.3.1</version>
+          </dependency>
+          <!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-rt -->
+          <dependency>
+              <groupId>com.sun.xml.ws</groupId>
+              <artifactId>rt</artifactId>
+              <version>2.3.3</version>
+          </dependency>
+     </dependencies>
+    <build>
+        <plugins>
+            <!-- Plugin used to run Java programs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>${main.class}</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

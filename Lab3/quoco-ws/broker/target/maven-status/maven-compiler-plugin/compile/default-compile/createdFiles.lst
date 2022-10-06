@@ -1,0 +1,3 @@
+service/core/QuoterService.class
+service/core/Broker.class
+service/core/Broker$JmdnsClient.class

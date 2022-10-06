@@ -1,0 +1,51 @@
+version: '3'
+services:
+    broker:
+        build: broker
+        ports:
+        - "9000:9000"
+        expose:
+        - 9000
+    auldfellas:
+        build: auldfellas
+        ports:
+        - "9001:9001"
+        expose:
+        - 9001
+        environment: 
+            CONTAINER_NAME: auldfellas
+        depends_on:
+        - broker
+    dodgydrivers:
+        build: dodgydrivers
+        ports:
+        - "9003:9003"
+        expose:
+        - 9003
+        environment: 
+            CONTAINER_NAME: dodgydrivers
+        depends_on:
+        - broker
+    girlpower:
+        ports:
+        - "9002:9002"
+        expose:
+        - 9002
+        build: girlpower
+        environment: 
+            CONTAINER_NAME: girlpower
+        depends_on:
+        - broker
+        
+    # uncomment the below to run the client alongside the other 4 services
+    # else run the client image using 'docker run --network=host client:latest'
+
+    # client:
+    #     build: client
+    #     environment: 
+    #         CONTAINER_NAME: broker
+    #     depends_on:
+    #     - broker
+    #     - auldfellas
+    #     - dodgydrivers
+    #     - girlpower
