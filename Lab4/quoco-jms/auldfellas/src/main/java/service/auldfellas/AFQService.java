@@ -27,8 +27,7 @@ public class AFQService extends AbstractQuotationService implements QuotationSer
 	public Quotation generateQuotation(ClientInfo info) {
 		// Create an initial quotation between 600 and 1200
 		double price = generatePrice(600, 600);
-		
-		// Automatic 30% discount for being male
+			// Automatic 30% discount for being male
 		int discount = (info.gender == ClientInfo.MALE) ? 30:0;
 		
 		// Automatic 2% discount per year over 60...
