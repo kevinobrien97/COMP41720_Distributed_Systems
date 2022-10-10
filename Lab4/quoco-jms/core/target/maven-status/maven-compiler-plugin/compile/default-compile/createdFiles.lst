@@ -6,4 +6,3 @@ service/core/ClientInfo.class
 service/core/AbstractQuotationService.class
 service/core/Quotation.class
 service/message/QuotationRequestMessage.class
-service/core/BrokerService.class

@@ -11,20 +11,20 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.Session;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-// import javax.jms.Topic;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import service.message.QuotationRequestMessage;
-import service.message.QuotationResponseMessage;
 import java.util.HashMap;
 import java.util.Map;
 import service.message.ClientApplicationMessage;
 
 public class Main {
 
+	// class variable that will be used to identify clients sent to broker
 	static long SEED_ID = 0;
+	// hashmap to associate seeds with clients
     static Map<Long, ClientInfo> cache = new HashMap<>();
 	
 	/**
@@ -47,46 +47,54 @@ public class Main {
 			host = args[0];
 		}
 		try {
+			// set up connection
 			ConnectionFactory factory =
 						new ActiveMQConnectionFactory("failover://tcp://"+host+":61616");
 			Connection connection = factory.createConnection();
 			connection.setClientID("client");
 			Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE); 
 
+			// set up the two queues that interact with the broker
 			Queue applicationRequestQueue = session.createQueue("REQUEST");
             Queue completedApplicationQueue = session.createQueue("RESPONSES");
 
 			MessageProducer applicationProducer = session.createProducer(applicationRequestQueue);
 			MessageConsumer applicationConsumer = session.createConsumer(completedApplicationQueue); 
 
+			// initial code for part 3 commented out
 			// Queue queue = session.createQueue("QUOTATIONS");
 			// Topic topic = session.createTopic("APPLICATIONS");
 			// MessageProducer producer = session.createProducer(topic);
 			// MessageConsumer consumer = session.createConsumer(queue); 
 			connection.start();
 
+			// loop over the clients to send each to the broker via the REQUEST queue
 			for (ClientInfo client : clients) {
+				// generate a QuotationRequestMessage with a unique ID and the client details
 				QuotationRequestMessage quotationRequest = new QuotationRequestMessage(SEED_ID++, client);
 				Message request = session.createObjectMessage(quotationRequest);
+				// add the ID and client as an object to the cache
 				cache.put(quotationRequest.id, quotationRequest.info);
 				applicationProducer.send(request);
 			}
-
-				
+			
+			// continuously search for responses on the RESPONSES queue once all clients sent to broker
 			while (true) {
 				Message message = applicationConsumer.receive();
 				if (message instanceof ObjectMessage) {
 					Object content = ((ObjectMessage) message).getObject();
 					if (content instanceof ClientApplicationMessage) {
 						ClientApplicationMessage response = (ClientApplicationMessage) content;
+						// get the client info for the ID being dealt with 
 						ClientInfo info = cache.get(response.id);
+						// display the client info and successively show each quote
 						displayProfile(info);
 						for (Quotation quote : response.quotations) {
 							displayQuotation(quote);
 						}
 						System.out.println("\n");
 					}
-
+					// remove from queue
 					message.acknowledge();
 				} else {
 					System.out.println("Unknown message type received in Client: " +
@@ -97,21 +105,6 @@ public class Main {
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
-
-
- 
-		// Create the broker and run the test data
-		// for (ClientInfo info : clients) {
-		// 	displayProfile(info);
-			
-		// 	// Retrieve quotations from the broker and display them...
-		// 	for(Quotation quotation : brokerService.getQuotations(info)) {
-		// 		displayQuotation(quotation);
-		// 	}
-			
-		// 	// Print a couple of lines between each client
-		// 	System.out.println("\n");
-		// }
 	}
 	
 	/**

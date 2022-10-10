@@ -32,16 +32,22 @@ public class Receiver {
         ConnectionFactory factory = new ActiveMQConnectionFactory("failover://tcp://"+host+":61616");
 
         try {
+            // set up connection
             Connection connection = factory.createConnection();
             connection.setClientID("girlpower");
             Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
+            // set up the queue and topic used by the broker
+            // those on the topic are sent by broker and all quotation services respond
+            // send back on queue to be dealt with by broker
             Queue queue = session.createQueue("QUOTATIONS");
             Topic topic = session.createTopic("APPLICATIONS");
             MessageConsumer consumer = session.createConsumer(topic);
             MessageProducer producer = session.createProducer(queue);
 
             connection.start();
+
+            // loop indefinitely
             while (true) {
                 // Get the next message from the APPLICATION topic
                 Message message = consumer.receive();

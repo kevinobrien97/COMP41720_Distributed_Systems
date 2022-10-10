@@ -19,6 +19,7 @@ import service.message.ClientApplicationMessage;
 
 public class Broker {
 
+    // hashmap to associate an ID with the ClientApplicationMessage
     static Map<Long, ClientApplicationMessage> cache = new HashMap<>();
 
     public static void main(String[] args) {
@@ -30,7 +31,7 @@ public class Broker {
             host = args[0];
         }
 		try {
-
+            // set up connection
 			ConnectionFactory factory =
 						new ActiveMQConnectionFactory("failover://tcp://"+host+":61616");
 			Connection connection = factory.createConnection();
@@ -62,7 +63,9 @@ public class Broker {
                             Object content = ((ObjectMessage) message).getObject();
                             if (content instanceof QuotationRequestMessage) {
                                 QuotationRequestMessage quotationRequest = (QuotationRequestMessage) content;
+                                // only if the client has not been sent before
                                 if (!cache.containsKey(quotationRequest.id)) {
+                                    // create new entry in hashmap
                                     cache.put(quotationRequest.id, new ClientApplicationMessage(quotationRequest.id));
                                     Message request = session.createObjectMessage(quotationRequest);
                                     producerApplication.send(request);
