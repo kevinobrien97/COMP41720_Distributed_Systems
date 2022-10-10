@@ -10,7 +10,7 @@
     <module>auldfellas</module>
     <module>dodgydrivers</module>
     <module>girlpower</module> 
-    <!-- <module>broker</module>  -->
+    <module>broker</module> 
     <module>client</module>  
   </modules>
 </project>

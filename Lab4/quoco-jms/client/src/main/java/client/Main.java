@@ -4,7 +4,6 @@ import java.text.NumberFormat;
 
 import service.core.ClientInfo;
 import service.core.Quotation;
-import service.core.Constants;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -38,15 +37,14 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 
-         // default value for host - so that it runs outside of a docker container
-		 String host = "localhost";
-        
-		 // this will assign it the hostname provided by the docker-compose
-		 if (args.length > 0) {
-			 host = args[0];
-		 }
+		// default value for host - so that it runs outside of a docker container
+		String host = "localhost";
+	
+		// this will assign it the hostname provided by the docker-compose
+		if (args.length > 0) {
+			host = args[0];
+		}
 		try {
 			ConnectionFactory factory =
 						new ActiveMQConnectionFactory("failover://tcp://"+host+":61616");
