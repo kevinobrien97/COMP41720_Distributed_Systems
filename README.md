@@ -3,5 +3,6 @@ Repo for college module practicals, tasked with distributing an insurance quotat
 
 Approaches to distribution include:
 
-- RMI
+- Remote Method Invocation
 - Web Services
+- Message Oriented Middleware

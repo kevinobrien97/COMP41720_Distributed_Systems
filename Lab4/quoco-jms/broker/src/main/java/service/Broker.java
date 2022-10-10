@@ -15,7 +15,6 @@ import service.message.QuotationRequestMessage;
 import service.message.QuotationResponseMessage;
 import java.util.HashMap;
 import java.util.Map;
-import service.core.ClientInfo;
 import service.message.ClientApplicationMessage;
 
 public class Broker {
