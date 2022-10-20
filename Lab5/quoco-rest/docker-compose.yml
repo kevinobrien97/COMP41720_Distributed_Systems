@@ -1,0 +1,25 @@
+version: '3'
+services:
+    broker:
+        build: ./broker
+        ports:
+        - "8080:8080"
+        container_name: broker
+    auldfellas:
+        build: ./auldfellas
+        environment: 
+            CONTAINER_NAME: broker
+        depends_on:
+        - broker
+    dodgydrivers:
+        build: dodgydrivers
+        environment: 
+            CONTAINER_NAME: broker
+        depends_on:
+        - broker
+    girlpower:
+        build: ./girlpower
+        environment: 
+            CONTAINER_NAME: broker
+        depends_on:
+        - broker

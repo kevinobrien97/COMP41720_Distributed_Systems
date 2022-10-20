@@ -5,20 +5,24 @@ import org.springframework.web.client.RestTemplate;
 import java.text.NumberFormat;
 
 import org.springframework.http.HttpEntity;
-
+import java.util.HashMap;
+import java.util.Map;
 import service.core.ClientApplication;
 import service.core.ClientInfo;
 import service.core.Quotation;
 
+// this solution simply prints out the output of the post requests which contains the quotations
+// it would also be feasible to use the cache to send GET requests for each ID to print out the applications, or request all applications
 public class Client {
-	static long SEED_ID = 0;
+
+	// hashmap to associate an ID with the ClientApplication - not used in this solution but it is easy to imagine use cases in an extended application
+	static Map<Long, ClientApplication> clientCache = new HashMap<>();
     public static void main(String[] args) {
 		String host = "localhost";
             int port = 8080;
             // More Advanced flag-based configuration
 
             // in the docker-compose it will be passed the broker localhost
-            // if running it using the client image the local network will be passed using the command mentiond in the readme
             try {
               
                 int i = 0;
@@ -44,30 +48,34 @@ public class Client {
             }
 
 
-
+		// set up the rest template
         RestTemplate restTemplate = new RestTemplate();
+		// loop through the clients
 		for (ClientInfo info : clients) {
-			// ClientApplication application = new ClientApplication(info, SEED_ID++);
 			HttpEntity<ClientInfo> request = new HttpEntity<>(info);
-			try{
-        	ClientApplication quotes =
-            	restTemplate.postForObject("http://"+host+":"+port+"/applications",
-                	request, ClientApplication.class);
-			if (quotes!=null) {
-			displayProfile(info);
-
-			for (Quotation quote : quotes.quotations) {
-				displayQuotation(quote);
+			try {
+				// send the client to the broker
+				ClientApplication quotes =
+					restTemplate.postForObject("http://"+host+":"+port+"/applications",
+						request, ClientApplication.class);
+				// if a quote has been returned
+				if (quotes!=null) {
+					// adding completed applications to cache - don't actually use them in this solution but it is easy to imagine use cases in an extended application
+					clientCache.put(quotes.id, quotes);
+					displayProfile(info);
+					// display each quotation
+					for (Quotation quote : quotes.quotations) {
+						displayQuotation(quote);
+					}
+				}
+				else {
+					System.out.println("Nothing returned");
+				}
+			} catch(Exception exception) {
+				System.out.println("Error: " + exception);
 			}
 		}
-		else {
-			System.out.println("Nothing returned");
-		}}catch(Exception exception) {
-			System.out.println("Error: " + exception);
-		}
-			
-		}
-    }
+	}
 
     	/**
 	 * Display the client info nicely.
