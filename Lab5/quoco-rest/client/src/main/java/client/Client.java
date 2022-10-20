@@ -5,18 +5,68 @@ import org.springframework.web.client.RestTemplate;
 import java.text.NumberFormat;
 
 import org.springframework.http.HttpEntity;
+
+import service.core.ClientApplication;
 import service.core.ClientInfo;
 import service.core.Quotation;
 
 public class Client {
+	static long SEED_ID = 0;
     public static void main(String[] args) {
+		String host = "localhost";
+            int port = 8080;
+            // More Advanced flag-based configuration
+
+            // in the docker-compose it will be passed the broker localhost
+            // if running it using the client image the local network will be passed using the command mentiond in the readme
+            try {
+              
+                int i = 0;
+                while (i < args.length) {
+                    String flag = args[i++];
+                    switch (flag) {
+                        case "-h":
+                            host = args[i++];
+                            break;
+                        case "-p":
+                            port = Integer.parseInt(args[i++]);
+                            break;
+                        default:
+                            throw new Exception("Invalid Argument: " + flag);
+                    }
+                }
+            } catch (Throwable th) {
+                System.out.println( "\nThis program only accepts:\n\n"+
+                "-h <hostname>\tChange the default hostname fo the WSDL document\n"+
+                "-p <port>\tChange the default port for the WSDL document.");
+                System.out.println("Issue: " + th.getMessage());
+                System.exit(0);
+            }
+
+
+
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<ClientInfo> request = new HttpEntity<>(clients[0]);
-        Quotation quotation =
-            restTemplate.postForObject("http://localhost:8080/quotations",
-                request, Quotation.class);
-        displayProfile(clients[0]);
-        displayQuotation(quotation);
+		for (ClientInfo info : clients) {
+			// ClientApplication application = new ClientApplication(info, SEED_ID++);
+			HttpEntity<ClientInfo> request = new HttpEntity<>(info);
+			try{
+        	ClientApplication quotes =
+            	restTemplate.postForObject("http://"+host+":"+port+"/applications",
+                	request, ClientApplication.class);
+			if (quotes!=null) {
+			displayProfile(info);
+
+			for (Quotation quote : quotes.quotations) {
+				displayQuotation(quote);
+			}
+		}
+		else {
+			System.out.println("Nothing returned");
+		}}catch(Exception exception) {
+			System.out.println("Error: " + exception);
+		}
+			
+		}
     }
 
     	/**

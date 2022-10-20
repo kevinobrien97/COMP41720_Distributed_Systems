@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Rem
  *
  */
-public class Quotation implements Serializable {
+public class Quotation {
 	private String company;
 	private String reference;
 	private double price;

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Rem
  *
  */
-public class ClientInfo implements Serializable {
+public class ClientInfo {
 	
 	public static final char MALE				= 'M';
 	public static final char FEMALE				= 'F';
@@ -18,6 +18,7 @@ public class ClientInfo implements Serializable {
 	private int points;
 	private int noClaims;
 	private String licenseNumber;
+	public int SEED_ID;
 	
 	public ClientInfo(String name, char sex, int age, int points, int noClaims, String licenseNumber) {
 		this.name = name;

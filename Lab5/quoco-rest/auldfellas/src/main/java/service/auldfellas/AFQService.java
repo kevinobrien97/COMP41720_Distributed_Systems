@@ -71,6 +71,7 @@ public class AFQService extends AbstractQuotationService {
 		return quotation;
 	}
 
+	// custom error when resource not found
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public class NoSuchQuotationException extends RuntimeException {
 		static final long serialVersionUID = -6516152229878843037L;
