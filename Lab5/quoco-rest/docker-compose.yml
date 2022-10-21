@@ -5,6 +5,8 @@ services:
         ports:
         - "8080:8080"
         container_name: broker
+        environment:
+            URLS: http://auldfellas:8081/,http://dodgydrivers:8082/,http://girlpower:8083/
     auldfellas:
         build: ./auldfellas
         environment: 

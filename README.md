@@ -6,3 +6,4 @@ Approaches to distribution include:
 - Remote Method Invocation
 - Web Services
 - Message Oriented Middleware
+- REST

@@ -22,6 +22,7 @@ import java.net.URI;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -38,6 +39,10 @@ public class LocalBrokerService {
 	// hashmap to associate an ID with the ClientApplication
 	static Map<Long, ClientApplication> cache = new HashMap<>();
 
+	// getting the URLs passed by either docker or application.properties
+	@Value("#{'${server.urls}'.split(',\\s*')}")
+    List<String> urls;
+
 	// set up applications URI to post quotation resources
 	// it was an option to post ClientApplications instead of ClientInfo to this endpoint
 	// however this would involve assigning IDs in the client, which if there were multiple clients would not make sense
@@ -45,7 +50,6 @@ public class LocalBrokerService {
 		public ResponseEntity<ClientApplication> postQuotations(@RequestBody ClientInfo info) {
 			// create a new application with the current seed value and the client info
 			ClientApplication application = new ClientApplication(SEED_ID++, info);
-			
 			// send the getQuotations method an application and store the return in a ClientApplication object
 			ClientApplication returnedApp = getQuotations(application);
 			// add application to brokers cache to be used in GET requests
@@ -71,19 +75,14 @@ public class LocalBrokerService {
 		RestTemplate restTemplate = new RestTemplate();
         HttpEntity<ClientInfo> request = new HttpEntity<>(info);
 		// retreive quotation responses from each of the quotation services and add the quote to the ClientApplication object
-		Quotation quotation =
-		restTemplate.postForObject("http://auldfellas:8081/quotations",
-			request, Quotation.class);
-		application.quotations.add(quotation);
-		Quotation quotation1 =
-			restTemplate.postForObject("http://dodgydrivers:8082/quotations",
+
+		// loop through each of the passed urls
+		for (String url : urls) {
+			Quotation quotation =
+			restTemplate.postForObject(url + "quotations",
 				request, Quotation.class);
-		application.quotations.add(quotation1);
-		Quotation quotation2 =
-			restTemplate.postForObject("http://girlpower:8083/quotations",
-				request, Quotation.class);
-		application.quotations.add(quotation2);
-		
+			application.quotations.add(quotation);
+		}
 
 		return application;
 	}
