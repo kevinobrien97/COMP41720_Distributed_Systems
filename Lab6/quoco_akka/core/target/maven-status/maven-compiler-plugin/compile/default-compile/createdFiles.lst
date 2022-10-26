@@ -1,8 +1,10 @@
 service/messages/QuotationRequest.class
 service/core/QuotationService.class
 service/messages/QuotationResponse.class
+service/messages/ApplicationRequest.class
 service/core/Constants.class
 service/core/ClientInfo.class
+service/messages/ApplicationResponse.class
 service/messages/MyInterface.class
 service/core/AbstractQuotationService.class
 service/core/Quotation.class

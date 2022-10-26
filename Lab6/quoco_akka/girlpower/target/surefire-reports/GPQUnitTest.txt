@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: GPQUnitTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.388 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.046 sec

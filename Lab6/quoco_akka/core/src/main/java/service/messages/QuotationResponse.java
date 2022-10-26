@@ -9,7 +9,7 @@ public class QuotationResponse implements MyInterface {
         this.quotation = quotation;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

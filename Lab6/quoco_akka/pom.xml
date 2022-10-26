@@ -11,6 +11,6 @@
     <module>dodgydrivers</module>
     <module>girlpower</module> 
     <module>broker</module> 
-    <!-- <module>client</module>   -->
+    <module>client</module>  
   </modules>
 </project>
