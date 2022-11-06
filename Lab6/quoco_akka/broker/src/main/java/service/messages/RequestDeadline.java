@@ -6,6 +6,7 @@ public class RequestDeadline {
     private int SEED_ID;
     private ActorRef ref; 
 
+    // takes both ID and ActorRef to identify the ActorRef that instantiated it when the timer ends
     public RequestDeadline(int id, ActorRef ref) {
         this.SEED_ID = id;
         this.ref = ref;

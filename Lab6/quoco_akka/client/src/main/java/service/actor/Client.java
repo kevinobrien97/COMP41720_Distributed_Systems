@@ -9,9 +9,12 @@ import service.messages.ApplicationResponse;
 import akka.actor.ActorSelection;
 
 public class Client extends AbstractActor {
+    // initialise the broker variable that will be used to contact the broker
     public ActorSelection broker;
+    // unique IDs for applications
     static int SEED_ID = 0;
 
+    // constructor so that the broker can be passed 
     public Client(ActorSelection broker) {
         this.broker = broker;
     }
@@ -19,10 +22,13 @@ public class Client extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+        // listen for strings
         .match(String.class,
             msg -> {
+                // if it isn't the correct keyword return
                 if (!msg.equals("send_clients")) return;
 
+                // send each client to the broker as part of a new application
                 for (ClientInfo client : clients) {
                     ApplicationRequest request = new ApplicationRequest(SEED_ID++, client);
                     broker.tell(request, getSelf());
@@ -30,9 +36,10 @@ public class Client extends AbstractActor {
             }
         )        
 
-
+        // listen for ApplicationResponses
         .match(ApplicationResponse.class,
             response -> {
+                // display the client info and quotations for the client
                 ClientInfo info = response.getInfo();
                 displayProfile(info);
 
